@@ -1,10 +1,12 @@
 require("dotenv").config();
 const express = require("express");
+const mongoose = require("mongoose");
 
 const workoutsRouter = require("./routes/workouts.routes")
 
 const port = process.env.PORT;
 const host = "127.0.0.1";
+const URI = process.env.MONGODB_FITNESS_URI;
 
 const app = express();
 
@@ -20,6 +22,13 @@ app.use("*", (req, res) => {
 	res.status(404).json({ error: "Page not found"});
 })
 
-app.listen(port, host, () => {
-  console.log(`Server runing at http://${host}:${port}`);
-});
+mongoose.connect(URI)
+	.then(() => {
+		app.listen(port, host, () => {
+			console.log(`Server connected to db and runing at http://${host}:${port}`);
+		});
+	})
+	.catch((error) => {
+		console.error(error);
+	})
+
