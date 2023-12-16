@@ -11,6 +11,7 @@ const URI = process.env.MONGODB_FITNESS_URI;
 const app = express();
 
 // middleware
+app.use(express.json());
 app.use((req, res, next) => {
   console.log({ path: req.path, method: req.method });
   next();
@@ -22,7 +23,8 @@ app.use("*", (req, res) => {
 	res.status(404).json({ error: "Page not found"});
 })
 
-mongoose.connect(URI)
+mongoose
+	.connect(URI)
 	.then(() => {
 		app.listen(port, host, () => {
 			console.log(`Server connected to db and runing at http://${host}:${port}`);
