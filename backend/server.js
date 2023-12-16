@@ -6,7 +6,6 @@ const workoutsRouter = require("./routes/workouts.routes")
 
 const port = process.env.PORT;
 const host = "127.0.0.1";
-const URI = process.env.MONGODB_FITNESS_URI;
 
 const app = express();
 
@@ -24,10 +23,10 @@ app.use("*", (req, res) => {
 })
 
 mongoose
-	.connect(URI)
+	.connect(process.env.MONGODB_FITNESS_URI)
 	.then(() => {
 		app.listen(port, host, () => {
-			console.log(`Server connected to db and runing at http://${host}:${port}`);
+			console.log(`Server connected to db and running at http://${host}:${port}`);
 		});
 	})
 	.catch((error) => {
