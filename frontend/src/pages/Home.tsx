@@ -9,6 +9,7 @@ import {
 
 import { DBWorkoutType, WorkoutType } from "../types";
 import WorkoutDetails from "../components/WorkoutDetails";
+import WorkoutForm from "../components/WorkoutForm";
 
 const loaderWorker = async (request: Request) => {
   const url = "http://localhost:4000/api/workouts/";
@@ -33,7 +34,7 @@ const loaderWorker = async (request: Request) => {
     createdAt: new Date(workout.createdAt),
     updatedAt: new Date(workout.updatedAt),
   }));
-  console.log(workouts);
+  // console.log(workouts);
   return workouts;
 };
 
@@ -57,6 +58,7 @@ const Home = () => {
           </Await>
         </Suspense>
       </div>
+      <WorkoutForm />
     </div>
   );
 };

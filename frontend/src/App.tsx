@@ -2,6 +2,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import RootLayout from "./layout/RootLayout";
 import Home, { loader as homeLoader } from "./pages/Home";
+import { action as workoutFormAction } from "./components/WorkoutForm";
 
 const router = createBrowserRouter([
   {
@@ -12,6 +13,7 @@ const router = createBrowserRouter([
         index: true,
         element: <Home />,
         loader: homeLoader,
+        action: workoutFormAction,
       }
     ]
   }
