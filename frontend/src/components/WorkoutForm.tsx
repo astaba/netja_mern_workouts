@@ -1,8 +1,9 @@
 import React from "react";
 import { Form, ActionFunctionArgs, useActionData } from "react-router-dom";
+
 import { DBWorkoutType } from "../types";
 
-export const action = async ({ request }: ActionFunctionArgs) => {
+const actionPostWorker = async (request: Request) => {
   const formData = await request.formData();
   const payload = {
     title: formData.get("title"),
@@ -29,6 +30,31 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   return data;
 };
 
+const actionDeleteWorker = async (request: Request) => {
+  const formData = await request.formData();
+  const id = formData.get("id");
+  // console.log(payload);
+  const requestedURL = new URL(`http://localhost:4000/api/workouts/${id}`);
+  const options = { method: "DELETE" };
+  const outGoingRequest = new Request(requestedURL, options);
+  const response = await fetch(outGoingRequest);
+  if (!response.ok) {
+    const error = await response.json();
+    console.error(error);
+    return error;
+  }
+  const data = await response.json();
+  console.log(data);
+  return data;
+};
+
+export const action = ({ request }: ActionFunctionArgs) => {
+  const method = request.method;
+  if (method.toLowerCase() === "post") return actionPostWorker(request);
+  if (method.toLowerCase() === "delete") return actionDeleteWorker(request);
+  return null;
+};
+
 const WorkoutForm = () => {
   const [formInputs, setFormInputs] = React.useState({
     title: "",
@@ -46,10 +72,12 @@ const WorkoutForm = () => {
   };
 
   const actionData = useActionData() as { error: string } | DBWorkoutType;
+
   React.useEffect(() => {
-    if (actionData && "error" in actionData) {
+    if (!actionData) return;
+    if ("error" in actionData) {
       setError(actionData.error);
-    } else {
+    } else if ("_id" in actionData) {
       setFormInputs({ title: "", load: "", reps: "" });
       setError("");
     }
