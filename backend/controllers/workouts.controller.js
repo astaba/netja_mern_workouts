@@ -20,8 +20,18 @@ class WorkoutsController {
       const workout = await Workout.create({ title, reps, load });
       res.status(200).json(workout);
     } catch (error) {
-      console.log(error);
-      res.status(400).json({ error: error.message });
+      let requiredFields = [];
+      Object.keys(error.errors).forEach((field) => {
+        if(error.errors[field].kind === "required") {
+          requiredFields.push(field);
+        }
+      });
+      if(requiredFields.length > 0) {
+        res.status(400).json({
+          error: `The following fields are required: ${requiredFields.join(", ")}.`,
+          requiredFields,
+        });
+      }
     }
   }
 
