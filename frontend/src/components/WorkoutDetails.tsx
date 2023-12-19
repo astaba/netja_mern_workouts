@@ -1,15 +1,12 @@
 import React from "react";
 import { useSubmit } from "react-router-dom";
+import moment from "moment";
 
 import { WorkoutDetailsProps } from "../types";
 import IconDeleteBin5Line from "./IconDeleteBin5Line";
 
 const WorkoutDetails: React.FC<WorkoutDetailsProps> = ({ workout }) => {
-  const createdAt = workout.createdAt.toLocaleDateString("en-US", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  });
+  const createdAt = moment(workout.createdAt).fromNow();
 
   const submit = useSubmit();
 
