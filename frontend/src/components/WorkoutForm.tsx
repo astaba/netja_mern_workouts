@@ -62,21 +62,26 @@ const WorkoutForm = () => {
     reps: "",
   });
   const [error, setError] = React.useState("");
+  const [requiredFields, setRequiredFields] = React.useState([""]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
+    setRequiredFields([...requiredFields.filter((field) => field !== name)]);
     setFormInputs({
       ...formInputs,
       [name]: value,
     });
   };
 
-  const actionData = useActionData() as { error: string } | DBWorkoutType;
+  const actionData = useActionData() as
+    | { error: string; requiredFields: string[] }
+    | DBWorkoutType;
 
   React.useEffect(() => {
     if (!actionData) return;
     if ("error" in actionData) {
       setError(actionData.error);
+      setRequiredFields(actionData.requiredFields);
     } else if ("_id" in actionData) {
       setFormInputs({ title: "", load: "", reps: "" });
       setError("");
@@ -93,6 +98,7 @@ const WorkoutForm = () => {
         name="title"
         value={formInputs.title}
         onChange={handleInputChange}
+        className={requiredFields.includes("title") ? "error" : undefined}
       />
       <label htmlFor="load">Load (in Kg):</label>
       <input
@@ -101,6 +107,7 @@ const WorkoutForm = () => {
         name="load"
         value={formInputs.load}
         onChange={handleInputChange}
+        className={requiredFields.includes("load") ? "error" : undefined}
       />
       <label htmlFor="reps">Number of reps:</label>
       <input
@@ -109,6 +116,7 @@ const WorkoutForm = () => {
         name="reps"
         value={formInputs.reps}
         onChange={handleInputChange}
+        className={requiredFields.includes("reps") ? "error" : undefined}
       />
       <button type="submit">Add Workout</button>
       {error && <div className="error">{error}</div>}
